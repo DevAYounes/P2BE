@@ -1,0 +1,25 @@
+{
+  "name": "p2api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "consign": "^0.1.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^9.0.2",
+    "mssql": "^6.3.1",
+    "nodemon": "^3.0.1",
+    "path": "^0.12.7",
+    "util": "^0.12.3"
+  }
+}
