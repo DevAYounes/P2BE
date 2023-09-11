@@ -73,38 +73,58 @@ const getPolls = async (req, res) => {
 
   res.send(filtered);
 };
+
 const getMyPolls = async (req, res) => {
   const pool = await poolPromise;
   const email = req.params.email;
-  var queryuser = `SELECT * FROM PollUsers where email = "${email}"`;
-  var userID = queryuser[0].UserID;
-  //where email = email
+  var queryuser = `SELECT * FROM [PollUsers] WHERE email = '${email}'`;
+  try {
+    const rsUser = await pool.request().query(queryuser);
+    var userID = rsUser.recordset[0].Id;
+
+    //or where userid = userid
+    var query = `SELECT * FROM PollCards where PollUserID =${userID} LEFT JOIN [dbo].[Options]
+    on [PollCards].Id = [dbo].[Options].PollCardsID
+    for json auto`;
+    const rs = await pool.request().query(query);
+    const filtered = Object.values(rs.recordset[0])[0];
+
+    res.send(filtered);
+  } catch (error) {
+    console.log(error);
+    res.send(error);
+  }
+
+  // var userID = queryuser[0].UserID;
+
   //or where userid = userid
-  var query = `SELECT * FROM PollCards where UserID =${userID}`;
-  const rs = await pool.request().query(query);
-  res.send(rs.recordsets);
+  // var query = `SELECT * FROM PollCards where UserID =${userID}`;
+  // const rs = await pool.request().query(query);
 };
+
 const getActivePolls = async (req, res) => {
-  const pool = await poolPromise;
-  const email = req.params.email;
-  var queryuser = `SELECT * FROM PollUsers where email = "${email}"`;
-  const rsUser = await pool.request().query(queryuser);
-  var userID = rsUser.recordsets[0].UserID;
-  //where email = email
+  // const pool = await poolPromise;
+  // const email = req.params.email;
+  // var queryuser = `SELECT * FROM PollUsers where email = "${email}"`;
+  // const rsUser = await pool.request().query(queryuser);
+  // var userID = rsUser.recordsets[0].UserID;
   //or where userid = userid
-  var query = `SELECT * FROM PollCards where UserID =${userID}`;
-  const rs = await pool.request().query(query);
-  res.send(rs.recordsets);
+  // var query = `SELECT * FROM PollCards where UserID =${userID}`;
+  // const rs = await pool.request().query(query);
+  // res.send(rs.recordsets);
 };
 const submit = async (req, res) => {
   const option = req.params.option;
+  const title = req.params.title;
   try {
     const pool = await poolPromise;
-    // const title = req.params.title;
-    // var querypoll = `SELECT * FROM PollUsers where email = "${title}"`;
-    res.send("Success");
     var votesQuery = `update Options set [votes] =[votes]+1 where  [option]='${option}'`;
     const updateVotes = await pool.request().query(votesQuery);
+    // var submiteUpdate = `update Options set [submited] =1 where  [option]='${option}'`;
+    // const subUpdate = await pool.request().query(submiteUpdate);
+    var submiteUpdate = `update PollCards set [submited] = 1 where  [Title]='${title}'`;
+    const subUpdate = await pool.request().query(submiteUpdate);
+    res.send("Success");
   } catch (error) {
     res.send(error);
   }

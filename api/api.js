@@ -9,5 +9,5 @@ router.post("/addPolls/:email",addPolls)
 router.get("/getPolls/",getPolls)
 router.get("/getMyPolls/:email",getMyPolls)
 router.post("/getActivePolls/:email",getActivePolls)
-router.post("/submit/:option",submit)
+router.post("/submit/:option/:title",submit)
 module.exports = router;
